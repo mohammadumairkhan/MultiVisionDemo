@@ -20,6 +20,10 @@ app.config(function($routeProvider, $locationProvider){
 			controller: 'userListCtrl',
 			resolve: routeRuleChecks.admin
 		})
+		.when('/signup',{
+			templateUrl: 'partials/account/signup',
+			controller: 'signupCtrl'
+		})
 });
 
 app.run(function ($rootScope, $location) {

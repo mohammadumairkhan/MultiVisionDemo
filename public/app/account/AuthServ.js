@@ -25,6 +25,16 @@ angular.module('app').factory('AuthServ', function($http, IdentityServ, UserServ
 				return true;
 			else
 				return $q.reject("not authorized");
+		},
+		createUser: function(newUserData){
+			var newUser = new UserServ(newUserData);
+
+			return newUser.$save().then(function(res){
+				IdentityServ.currentUser = newUser;
+				return true;
+			}, function(res){
+				throw res.data.reason;
+			})
 		}
 
 	}

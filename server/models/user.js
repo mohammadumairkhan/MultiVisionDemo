@@ -1,45 +1,39 @@
 var mongoose 	= require('mongoose');
-var crypto		= require('crypto');
+var encrypt = require('../utilities/encryption');
 
-module.exports = function(){
-	var userSchema = mongoose.Schema({
-		firstName: String,
-		lastName: String,
-		username: String,
-		salt: String,
-		hashed_pwd: String,
-		roles: [String]
-	});
-	
-	userSchema.methods = {
-		authenticate: function(passwordToMatch){
-			return hashPwd(this.salt, passwordToMatch) === this.hashed_pwd;
-		}
+
+var userSchema = mongoose.Schema({
+	firstName: {type: String, required: '{PATH} is required!'},
+	lastName: {type: String, required: '{PATH} is required!'},
+	username: {type: String, required: '{PATH} is required!', unique: true},
+	salt: {type: String, required: '{PATH} is required!'},
+	hashed_pwd: {type: String, required: '{PATH} is required!'},
+	roles: [String]
+});
+
+userSchema.methods = {
+	authenticate: function(passwordToMatch){
+		return encrypt.hashPwd(this.salt, passwordToMatch) === this.hashed_pwd;
 	}
-	
-	var User = mongoose.model('User', userSchema);
+}
 
+var User = mongoose.model('User', userSchema);
+
+function createDefaultUsers(){
 	User.find({}).exec(function(err, collection){
 		if(collection.length === 0){
 			var salt, hash;
-			salt = createSalt();
-			hash = hashPwd(salt, 'ukhan');
+			salt = encrypt.createSalt();
+			hash = encrypt.hashPwd(salt, 'ukhan');
 			User.create({firstName: "Mohammad", lastName: "Khan", username:"ukhan", salt: salt, hashed_pwd: hash, roles: ['admin']});
-			salt = createSalt();
-			hash = hashPwd(salt, 'achisti');
+			salt = encrypt.createSalt();
+			hash = encrypt.hashPwd(salt, 'achisti');
 			User.create({firstName: "Akhtar", lastName: "Chishti", username:"achisti", salt: salt, hashed_pwd: hash, roles:[]});
-			salt = createSalt();
-			hash = hashPwd(salt, 'schan');
+			salt = encrypt.createSalt();
+			hash = encrypt.hashPwd(salt, 'schan');
 			User.create({firstName: "Salim", lastName: "Chandio", username:"schan", salt: salt, hashed_pwd: hash});
 		}
 	});
-
-	function createSalt(){
-		return crypto.randomBytes(128).toString('base64');
-	}
-
-	function hashPwd(salt, pwd){
-		var hmac = crypto.createHmac('sha1', salt);
-		return hmac.update(pwd).digest('hex');
-	}
 }
+
+exports.createDefaultUsers = createDefaultUsers;
