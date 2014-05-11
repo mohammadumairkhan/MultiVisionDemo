@@ -37,6 +37,10 @@ app.config(function($routeProvider, $locationProvider){
 			templateUrl: 'partials/courses/course-list',
 			controller: 'courseListCtrl'
 		})
+		.when('/courses/:id',{
+			templateUrl: 'partials/courses/course-details',
+			controller: 'courseDetailsCtrl'
+		})
 });
 
 app.run(function ($rootScope, $location) {

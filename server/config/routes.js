@@ -9,6 +9,7 @@ module.exports = function(app){
 
 
   app.get('/api/courses', CourseController.GetCourses);
+	app.get('/api/courses/:id', CourseController.GetCourseById);
 
 	app.get('/partials/*', function(req, res){
 		res.render('../../public/app/' + req.params[0]);
