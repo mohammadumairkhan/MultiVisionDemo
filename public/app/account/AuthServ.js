@@ -35,6 +35,22 @@ angular.module('app').factory('AuthServ', function($http, IdentityServ, UserServ
 			}, function(res){
 				throw res.data.reason;
 			})
+		},
+		authorizeAuthenticatedUserForRoute: function(){
+			if(IdentityServ.isAuthenticated())
+				return true;
+			else
+				return $q.reject("not authenticated");
+		},
+		updateCurrentUser: function(updatedUserData){
+			var userClone = angular.copy(IdentityServ.currentUser);
+			angular.extend(userClone, updatedUserData);
+			return userClone.$update(function(res){
+				IdentityServ.currentUser = userClone;
+				return true;
+			}, function(res){
+				throw res.data.reason;
+			});
 		}
 
 	}

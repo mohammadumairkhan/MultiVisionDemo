@@ -2,12 +2,16 @@ var app = angular.module('app', ['ngResource', 'ngRoute']);
 app.config(function($routeProvider, $locationProvider){
 	//$locationProvider.html5Mode(true);
 	var routeRuleChecks = {
-		admin: 
-			{
-				auth: function(AuthServ){
-					return AuthServ.authorizeCurrentUserForRoute('admin');
-				}	
+		admin:{
+			auth: function(AuthServ){
+				return AuthServ.authorizeCurrentUserForRoute('admin');
 			}
+		},
+		user:{
+			auth: function(AuthServ){
+				return AuthServ.authorizeAuthenticatedUserForRoute();
+			}
+		}
 	}
 
 	$routeProvider
@@ -23,6 +27,15 @@ app.config(function($routeProvider, $locationProvider){
 		.when('/signup',{
 			templateUrl: 'partials/account/signup',
 			controller: 'signupCtrl'
+		})
+		.when('/profile',{
+			templateUrl: 'partials/account/profile',
+			controller: 'profileCtrl',
+			resolve: routeRuleChecks.user
+		})
+		.when('/courses',{
+			templateUrl: 'partials/courses/course-list',
+			controller: 'courseListCtrl'
 		})
 });
 

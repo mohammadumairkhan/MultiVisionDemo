@@ -11,6 +11,9 @@ angular.module('app').factory('IdentityServ', function($window, UserServ){
 		},
 		isAuthorized: function(role){
 			return !!this.currentUser && this.currentUser.roles.indexOf(role) > -1;
+		},
+		isAuthenticated: function(){
+			return !!this.currentUser;
 		}
 	}
 })
